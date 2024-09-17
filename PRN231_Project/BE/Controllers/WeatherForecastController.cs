@@ -1,3 +1,5 @@
+using Lib.Models;
+using Lib.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BE.Controllers
@@ -6,28 +8,28 @@ namespace BE.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly PRN231_ProjectContext context;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Question> _question;
 
-        private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(PRN231_ProjectContext context,
+            IRepository<User> user,
+            IRepository<Question> question)
         {
-            _logger = logger;
+            _userRepository = user;
+           
+            this.context = context;
+            _question = question;   
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+      
+
+        [HttpGet("Test1")]
+        public async Task<IActionResult> get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            
+            return Ok(await (_userRepository.GetAllAsync()));
         }
     }
 }
