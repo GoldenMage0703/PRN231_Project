@@ -168,6 +168,8 @@ namespace Lib.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.IsCorrect).HasColumnName("isCorrect");
+
                 entity.Property(e => e.OptionText)
                     .HasMaxLength(500)
                     .HasColumnName("option_text");
@@ -175,7 +177,7 @@ namespace Lib.Models
                 entity.Property(e => e.QuestionId).HasColumnName("question_id");
 
                 entity.HasOne(d => d.Question)
-                    .WithMany(p => p.OptionsNavigation)
+                    .WithMany(p => p.Options)
                     .HasForeignKey(d => d.QuestionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__options__questio__3B75D760");
@@ -198,23 +200,6 @@ namespace Lib.Models
                     .HasForeignKey(d => d.Course)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__questions__cours__3C69FB99");
-
-                entity.HasMany(d => d.Options)
-                    .WithMany(p => p.Questions)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "CorrectOption",
-                        l => l.HasOne<Option>().WithMany().HasForeignKey("OptionId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__correct_o__optio__35BCFE0A"),
-                        r => r.HasOne<Question>().WithMany().HasForeignKey("QuestionId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__correct_o__quest__36B12243"),
-                        j =>
-                        {
-                            j.HasKey("QuestionId", "OptionId").HasName("PK__correct___818CB9A824AF2EFE");
-
-                            j.ToTable("correct_option");
-
-                            j.IndexerProperty<int>("QuestionId").HasColumnName("question_id");
-
-                            j.IndexerProperty<int>("OptionId").HasColumnName("option_id");
-                        });
             });
 
             modelBuilder.Entity<User>(entity =>
