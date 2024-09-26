@@ -55,5 +55,13 @@ namespace Lib.Repository
         {
             return await _context.Set<T>().Where(predicate).ToListAsync();
         }
+
+        public async Task<T> GetLastAsync<TKey>(Expression<Func<T, TKey>> keySelector)
+        {
+            return await _context.Set<T>().OrderBy(keySelector).LastOrDefaultAsync();
+        }
+
+
+
     }
 }

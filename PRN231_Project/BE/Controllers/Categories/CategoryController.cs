@@ -26,7 +26,7 @@ namespace BE.Controllers.Categories
         {
             return Ok(await _category.GetByIdAsync(id));
         }
-        [HttpPut("CreateCategory")]
+        [HttpPost("CreateCategory")]
         public async Task<IActionResult> Put(CreateCategoryDTO category) { 
         await _category.AddAsync(new Category
         {
