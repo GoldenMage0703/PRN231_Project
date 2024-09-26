@@ -40,9 +40,7 @@ namespace Lib.Models
             {
                 entity.ToTable("bills");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.TotalPayment)
                     .HasColumnType("money")
@@ -84,9 +82,7 @@ namespace Lib.Models
             {
                 entity.ToTable("categories");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CategoryName)
                     .HasMaxLength(20)
@@ -103,9 +99,7 @@ namespace Lib.Models
             {
                 entity.ToTable("courses");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Category).HasColumnName("category");
 
@@ -132,22 +126,20 @@ namespace Lib.Models
                     .WithMany(p => p.Courses)
                     .HasForeignKey(d => d.Category)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__courses__categor__3F466844");
+                    .HasConstraintName("FK__courses__categor__398D8EEE");
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.Courses)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__courses__created__3E52440B");
+                    .HasConstraintName("FK__courses__created__3A81B327");
             });
 
             modelBuilder.Entity<CourseAttempt>(entity =>
             {
                 entity.ToTable("course_attempts");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.AttemptDate)
                     .HasColumnType("date")
@@ -174,9 +166,7 @@ namespace Lib.Models
             {
                 entity.ToTable("options");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.OptionText)
                     .HasMaxLength(500)
@@ -188,16 +178,14 @@ namespace Lib.Models
                     .WithMany(p => p.OptionsNavigation)
                     .HasForeignKey(d => d.QuestionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__options__questio__44FF419A");
+                    .HasConstraintName("FK__options__questio__3B75D760");
             });
 
             modelBuilder.Entity<Question>(entity =>
             {
                 entity.ToTable("questions");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Course).HasColumnName("course");
 
@@ -209,17 +197,17 @@ namespace Lib.Models
                     .WithMany(p => p.Questions)
                     .HasForeignKey(d => d.Course)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__questions__cours__4222D4EF");
+                    .HasConstraintName("FK__questions__cours__3C69FB99");
 
                 entity.HasMany(d => d.Options)
                     .WithMany(p => p.Questions)
                     .UsingEntity<Dictionary<string, object>>(
                         "CorrectOption",
-                        l => l.HasOne<Option>().WithMany().HasForeignKey("OptionId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__correct_o__optio__48CFD27E"),
-                        r => r.HasOne<Question>().WithMany().HasForeignKey("QuestionId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__correct_o__quest__47DBAE45"),
+                        l => l.HasOne<Option>().WithMany().HasForeignKey("OptionId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__correct_o__optio__35BCFE0A"),
+                        r => r.HasOne<Question>().WithMany().HasForeignKey("QuestionId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__correct_o__quest__36B12243"),
                         j =>
                         {
-                            j.HasKey("QuestionId", "OptionId").HasName("PK__correct___818CB9A84BE97C85");
+                            j.HasKey("QuestionId", "OptionId").HasName("PK__correct___818CB9A824AF2EFE");
 
                             j.ToTable("correct_option");
 
@@ -233,9 +221,7 @@ namespace Lib.Models
             {
                 entity.ToTable("users");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Created)
                     .HasColumnType("date")
