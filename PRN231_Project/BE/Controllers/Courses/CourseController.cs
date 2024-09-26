@@ -49,7 +49,7 @@ namespace BE.Controllers.Courses
                     Category = createCourseDTO.Category,
                 });
 
-                var createCourse = await _course.GetLastAsync(x=>x.Id);
+                var createCourse = await _course.GetLastAsync(x => x.Id);
 
                 foreach (CreateQuestionDTO question in createQuestionDTO)
                 {
@@ -64,7 +64,7 @@ namespace BE.Controllers.Courses
                         await _option.AddAsync(new Option
                         {
                             OptionText = item.OptionText,
-                            Question = await _question.GetLastAsync(x=>x.Id),
+                            Question = await _question.GetLastAsync(x => x.Id),
                         });
                     }
                 }
@@ -76,6 +76,8 @@ namespace BE.Controllers.Courses
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
 
     }
 }

@@ -27,17 +27,19 @@ namespace BE.Controllers.Categories
             return Ok(await _category.GetByIdAsync(id));
         }
         [HttpPost("CreateCategory")]
-        public async Task<IActionResult> Put(CreateCategoryDTO category) { 
-        await _category.AddAsync(new Category
+        public async Task<IActionResult> Put(CreateCategoryDTO category)
         {
-            CategoryName = category.CategoryName,
-            Description= category.Description,
-        });
+            await _category.AddAsync(new Category
+            {
+                CategoryName = category.CategoryName,
+                Description = category.Description,
+            });
             return Ok();
         }
         [HttpDelete("RemoveCategory")]
-        public async Task<IActionResult> Delete(int id) { 
-         await _category.DeleteAsync(id);
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _category.DeleteAsync(id);
             return Ok();
         }
     }
