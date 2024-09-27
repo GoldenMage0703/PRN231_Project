@@ -7,7 +7,6 @@ namespace Lib.Models
     {
         public Question()
         {
-            OptionsNavigation = new HashSet<Option>();
             Options = new HashSet<Option>();
         }
 
@@ -16,8 +15,6 @@ namespace Lib.Models
         public string QuestionText { get; set; } = null!;
 
         public virtual Course CourseNavigation { get; set; } = null!;
-        public virtual ICollection<Option> OptionsNavigation { get; set; }
-
         public virtual ICollection<Option> Options { get; set; }
     }
 }

@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Course\" />
     <Folder Include="Controllers\Question\" />
   </ItemGroup>
 
