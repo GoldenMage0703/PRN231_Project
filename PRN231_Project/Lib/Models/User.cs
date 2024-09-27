@@ -17,7 +17,8 @@ namespace Lib.Models
         public string Email { get; set; } = null!;
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public int Role { get; set; }
+		//public string PasswordHash { get; set; } = null!; // thêm PasswordHash
+		public int Role { get; set; }
         public DateTime Created { get; set; }
 
         public virtual ICollection<Bill> Bills { get; set; }
