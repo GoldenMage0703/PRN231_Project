@@ -30,6 +30,14 @@ namespace BE.Controllers.Courses
             return Ok(courseList);
         }
 
+        [HttpGet("GetCourse")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var courseList = await _course.GetByIdIncludeAsync(x=>x.Questions,x=>x.Id==id);
+            return Ok(courseList);
+        }
+
+
         [HttpPut("CreateCourse")]
         public async Task<IActionResult> Put(CreateCourseWithQuestionsDTO createCourseWithQuestionsDTO)
         {
@@ -75,6 +83,13 @@ namespace BE.Controllers.Courses
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        [HttpGet("GetCourseByID")]
+        public async Task<IActionResult> GetCourseByID(int id)
+        {
+            var courseList = await _course.GetByIdIncludeAsync(x => x.Questions, x => x.Id == id);
+            return Ok(courseList);
         }
 
 

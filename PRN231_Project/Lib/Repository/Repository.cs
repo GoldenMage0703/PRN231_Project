@@ -1,6 +1,7 @@
 ﻿using Lib.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -63,5 +64,20 @@ namespace Lib.Repository
 
 
 
+        public async Task<IEnumerable<T>> FindIncludeAsync<TKey>(Expression<Func<T, TKey>> keySelector, Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>()
+                                 .Include(keySelector)  // Include the related entity
+                                 .Where(predicate)      // Apply filtering
+                                 .ToListAsync();
+        }
+
+        public async Task<T> GetByIdIncludeAsync<TKey>(Expression<Func<T, TKey>> keySelector, Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>()
+                                 .Include(keySelector)  // Include the related entity
+                                 .FirstOrDefaultAsync(predicate);      // Apply filtering
+                                 
+        }
     }
 }
