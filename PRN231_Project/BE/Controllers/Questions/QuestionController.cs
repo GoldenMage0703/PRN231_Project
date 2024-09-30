@@ -23,6 +23,13 @@ namespace BE.Controllers.Questions
             //var list = await _question.GetAllAsync();
             return Ok(list);
         }
+        [HttpGet("GetQuestionByID")]
+        public async Task<IActionResult> GetQues(int id)
+        {
 
+            var list = await _question.GetByIdIncludeAsync(x => x.Options, x => x.Id == id);
+            //var list = await _question.GetAllAsync();
+            return Ok(list);
+        }
     }
 }
