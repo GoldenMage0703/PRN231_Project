@@ -22,7 +22,6 @@ namespace BE.Controllers
 		[HttpPost]
 		public async Task<ActionResult<UserDTO>> CreateUser(UserDTO userDTO)
 		{
-			// Ánh xạ UserDTO thành thực thể User
 			var user = new User
 			{
 				Username = userDTO.Username,
