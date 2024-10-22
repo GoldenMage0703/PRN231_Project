@@ -11,6 +11,7 @@ namespace Lib.DTO
 		public string Username { get; set; }
 		public string Password { get; set; }
 		public string DisplayName { get; set; }
+		public string Email { get; set; }
 		// 1: Admin, 2: Teacher, 3: User
 		public int Role { get; set; } = 3;
 	}

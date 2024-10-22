@@ -19,7 +19,7 @@ namespace BE.Controllers.Questions
         [HttpGet("GetQuestionByCourse")]
         public async Task<IActionResult> Get(int courseID) {
         
-      var list= await _question.FindIncludeAsync(x=>x.Options,x=>x.Course == courseID);
+            var list= await _question.FindIncludeAsync(x=>x.Options,x=>x.Course == courseID);
             //var list = await _question.GetAllAsync();
             return Ok(list);
         }
