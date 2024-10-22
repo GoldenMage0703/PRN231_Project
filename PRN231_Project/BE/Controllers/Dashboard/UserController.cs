@@ -19,6 +19,28 @@ namespace BE.Controllers
 		{
 			_context = context;
 		}
+
+		[HttpGet]
+		public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+		{
+			// Truy xuất tất cả người dùng từ cơ sở dữ liệu
+			var users = await _context.Users
+				.Select(user => new UserDTO
+				{
+					Username = user.Username,
+					Email = user.Email,
+					DisplayName = user.DisplayName,
+					Role = user.Role
+				}).ToListAsync();
+
+			// Trả về danh sách người dùng dưới dạng JSON
+			return Ok(users);
+		}
+
+		private bool UserExists(int id)
+		{
+			return _context.Users.Any(e => e.Id == id);
+		}
 		[HttpPost]
 		public async Task<ActionResult<UserDTO>> CreateUser(UserDTO userDTO)
 		{
@@ -40,6 +62,55 @@ namespace BE.Controllers
 
 			return CreatedAtAction(nameof(CreateUser), new { id = user.Id }, user);
 		}
-		
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteUser(int id)
+		{
+			var user = await _context.Users.FindAsync(id);
+			if(user == null)
+			{
+				return NotFound(new {message = "User not Found"});
+			}
+			_context.Users.Remove(user);
+			await _context.SaveChangesAsync();
+			return Ok(new {message = "Delete successfully"});
+		}
+
+		[HttpPut("{id}")]
+		public async Task<IActionResult> UpdateUser(int id, UserDTO userDTO)
+		{
+			// Tìm kiếm người dùng theo id
+			var user = await _context.Users.FindAsync(id);
+
+			if (user == null)
+			{
+				return NotFound("User not found.");
+			}
+
+			user.Username = userDTO.Username;
+			user.Password = userDTO.Password; 
+			user.Email = userDTO.Email;
+			user.DisplayName = userDTO.DisplayName;
+			user.Role = userDTO.Role;
+
+			_context.Entry(user).State = EntityState.Modified;
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!UserExists(id))
+				{
+					return NotFound("User not found.");
+				}
+				else
+				{
+					throw;
+				}
+			}
+
+			return Ok(new { message = "User updated successfully." });
+		}
 	}
 }
