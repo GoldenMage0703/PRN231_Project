@@ -21,7 +21,7 @@ namespace BE.Controllers.Login
             _config = configuration;
 			_context = context;
 		}
-        private User AuthenticateUser(UserLoginDTO userLogin)
+        private Lib.Models.User AuthenticateUser(UserLoginDTO userLogin)
         {
 			var user = _context.Users.FirstOrDefault(u => u.Username == userLogin.Username && u.Password == userLogin.Password);
 			if (user != null)
@@ -107,7 +107,7 @@ namespace BE.Controllers.Login
 		[Authorize]
 		[HttpPost]
 		[Route("GetData")]
-		public string AddUser(User user)
+		public string AddUser(Lib.Models.User user)
 		{
 			return "User added with username" + user.Username;
 		}

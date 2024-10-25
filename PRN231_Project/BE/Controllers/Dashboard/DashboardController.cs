@@ -11,11 +11,11 @@ namespace BE.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class UserController : ControllerBase
+	public class DashboardController : ControllerBase
 	{
 		private readonly PRN231_ProjectContext _context;
 
-		public UserController(PRN231_ProjectContext context)
+		public DashboardController(PRN231_ProjectContext context)
 		{
 			_context = context;
 		}
@@ -44,7 +44,7 @@ namespace BE.Controllers
 		[HttpPost]
 		public async Task<ActionResult<UserDTO>> CreateUser(UserDTO userDTO)
 		{
-			var user = new User
+			var user = new Lib.Models.User
 			{
 				Username = userDTO.Username,
 				Password = userDTO.Password,
@@ -111,6 +111,22 @@ namespace BE.Controllers
 			}
 
 			return Ok(new { message = "User updated successfully." });
+		}
+		[HttpGet("TotalRevenue")]
+		public async Task<ActionResult<decimal>> GetTotalRevenue()
+		{
+			// Tính tổng tiền đã thu được từ hóa đơn
+			var totalRevenue = await _context.Bills.SumAsync(b => b.TotalPayment);
+			return Ok(totalRevenue);
+		}
+
+		[HttpGet("TotalRegistrations")]
+		public async Task<IActionResult> GetTotalRegistrations()
+		{
+			var totalRegistrations = await _context.CourseAttempts
+				.CountAsync(); // Đếm số lượng bản ghi trong CourseAttempt
+
+			return Ok(new { TotalRegistrations = totalRegistrations });
 		}
 	}
 }
