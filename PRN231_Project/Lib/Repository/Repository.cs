@@ -79,5 +79,17 @@ namespace Lib.Repository
                                  .FirstOrDefaultAsync(predicate);      // Apply filtering
                                  
         }
+
+        public async Task DeleteRangeAsync(ICollection<T> list)
+        {
+            _context.Set<T>().RemoveRange(list);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateRangeAsync(ICollection<T> list)
+        {
+            _context.Set<T>().UpdateRange(list);
+            await _context.SaveChangesAsync();
+        }
     }
 }

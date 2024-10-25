@@ -7,6 +7,7 @@ namespace Lib.Models
     public partial class Option
     {
         public int Id { get; set; }
+        [JsonIgnore]
         public int QuestionId { get; set; }
         public string OptionText { get; set; } = null!;
         public bool IsCorrect { get; set; }
