@@ -18,6 +18,8 @@ namespace Lib.Repository
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
+        Task DeleteRangeAsync(ICollection<T> list);
+        Task UpdateRangeAsync(ICollection<T> list);
 
         // New method for custom queries
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);

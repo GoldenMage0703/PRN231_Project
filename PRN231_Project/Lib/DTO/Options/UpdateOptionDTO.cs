@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lib.DTO
+namespace Lib.DTO.Options
 {
-    public class CreateOptionDTO
+    public class UpdateOptionDTO
     {
+        public int id { get; set; } 
         public string OptionText { get; set; } = null!;
         public bool isTrue { get; set; } = false;
     }
