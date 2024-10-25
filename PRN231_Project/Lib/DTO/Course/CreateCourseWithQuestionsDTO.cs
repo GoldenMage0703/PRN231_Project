@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Lib.DTO.Question;
 
-namespace Lib.DTO
+namespace Lib.DTO.Course
 {
     public class CreateCourseWithQuestionsDTO
     {
