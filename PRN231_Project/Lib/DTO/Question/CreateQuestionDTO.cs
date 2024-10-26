@@ -9,7 +9,7 @@ namespace Lib.DTO.Question
 {
     public class CreateQuestionDTO
     {
-        public int Course { get; set; }
+        
         public string QuestionText { get; set; } = null!;
         public ICollection<CreateOptionDTO>? Options { get; set; }
     }
