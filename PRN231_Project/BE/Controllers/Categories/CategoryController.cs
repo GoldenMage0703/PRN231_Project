@@ -5,8 +5,8 @@ using Lib.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BE.Controllers.Categories
-{
+namespace BE.Controllers.Categories;
+
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -44,4 +44,4 @@ namespace BE.Controllers.Categories
             return Ok();
         }
     }
-}
+
