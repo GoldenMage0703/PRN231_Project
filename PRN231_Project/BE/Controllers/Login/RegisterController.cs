@@ -19,7 +19,7 @@ namespace BE.Controllers.Login
 		public IActionResult Register(UserRegisterDTO userRegister)
 		{
 			// Tạo người dùng mới từ DTO
-			var user = new User
+			var user = new Lib.Models.User
 			{
 				Username = userRegister.Username,
 				Password = userRegister.Password,  // Lưu mật khẩu trực tiếp
