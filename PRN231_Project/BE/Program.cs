@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using BE.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -68,6 +69,8 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddDbContext<PRN231_ProjectContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("Test") ?? throw new InvalidOperationException("Connection string not found.")));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+
 builder.Services.AddCors(options =>
 {
 options.AddPolicy(name: MyAllowSpecificOrigins,

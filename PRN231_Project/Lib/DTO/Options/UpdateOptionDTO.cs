@@ -10,6 +10,6 @@ namespace Lib.DTO.Options
     {
         public int id { get; set; } 
         public string OptionText { get; set; } = null!;
-        public bool isTrue { get; set; } = false;
+        public bool isCorrect { get; set; } = false;
     }
 }

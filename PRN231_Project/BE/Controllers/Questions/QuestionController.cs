@@ -64,7 +64,7 @@ namespace BE.Controllers.Questions
                   await  _option.AddAsync(new Option {
                        QuestionId = questionList.Id,
                        OptionText = option.OptionText,
-                       IsCorrect = option.isTrue          
+                       IsCorrect = option.isCorrect          
                     });
                     continue;
                 }
@@ -72,7 +72,7 @@ namespace BE.Controllers.Questions
                 {
                     var prevOption =  await _option.GetByIdAsync(option.id);
                     prevOption.OptionText = option.OptionText;
-                    prevOption.IsCorrect = option.isTrue;
+                    prevOption.IsCorrect = option.isCorrect;
                   await  _option.UpdateAsync(prevOption);
                 }
             }

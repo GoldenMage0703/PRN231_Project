@@ -9,6 +9,6 @@ namespace Lib.DTO.Options
     public class CreateOptionDTO
     {
         public string OptionText { get; set; } = null!;
-        public bool isTrue { get; set; } = false;
+        public bool isCorrect { get; set; } = false;
     }
 }
