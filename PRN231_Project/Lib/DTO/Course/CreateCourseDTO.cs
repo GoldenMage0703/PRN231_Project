@@ -14,7 +14,7 @@ namespace Lib.DTO.Course
         public int TotalJoined { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
         public int Category { get; set; }
     }
 }

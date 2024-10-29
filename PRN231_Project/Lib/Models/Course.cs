@@ -18,7 +18,7 @@ namespace Lib.Models
         public int TotalJoined { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
         public int Category { get; set; }
         [JsonIgnore]
         public virtual Category CategoryNavigation { get; set; } = null!;

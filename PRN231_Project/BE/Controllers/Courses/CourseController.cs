@@ -111,7 +111,7 @@ namespace BE.Controllers.Courses
         [HttpGet("GetCourseByID")]
         public async Task<IActionResult> GetCourseByID(int id)
         {
-            var courseList = await _course.GetByIdIncludeAsync(x => x.Questions, x => x.Id == id);
+            var courseList = await _course.GetByIdAsync(id);
             return Ok(courseList);
         }
 
