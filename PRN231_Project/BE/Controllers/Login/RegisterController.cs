@@ -24,7 +24,9 @@ namespace BE.Controllers.Login
 				Username = userRegister.Username,
 				Password = userRegister.Password,  // Lưu mật khẩu trực tiếp
 				DisplayName = userRegister.DisplayName,
-				Role = 3
+				Email = userRegister.Email,
+
+                Role = 3
 			};
 
 			// Lưu người dùng vào cơ sở dữ liệu

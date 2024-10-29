@@ -9,12 +9,12 @@ namespace BE.Controllers
     public class WeatherForecastController : ControllerBase
     {
         private readonly PRN231_ProjectContext context;
-        private readonly IRepository<Lib.Models.User> _userRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly IRepository<Question> _question;
 
 
         public WeatherForecastController(PRN231_ProjectContext context,
-            IRepository<Lib.Models.User> user,
+            IRepository<User> user,
             IRepository<Question> question)
         {
             _userRepository = user;

@@ -222,6 +222,10 @@ namespace Lib.Models
                     .HasColumnName("email")
                     .IsFixedLength();
 
+                entity.Property(e => e.Img)
+                    .HasColumnType("image")
+                    .HasColumnName("img");
+
                 entity.Property(e => e.Password)
                     .HasMaxLength(25)
                     .HasColumnName("password")

@@ -1,8 +1,11 @@
 ﻿using Lib.DTO;
+using Lib.DTO.Course;
+using Lib.DTO.Question;
 using Lib.Models;
 using Lib.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BE.Controllers.Courses
 {
@@ -10,17 +13,18 @@ namespace BE.Controllers.Courses
     [ApiController]
     public class CourseController : ControllerBase
     {
-
+        protected readonly PRN231_ProjectContext _context;
         private readonly IRepository<Course> _course;
         private readonly IRepository<Question> _question;
         private readonly IRepository<Option> _option;
         private readonly IRepository<Category> _category;
-        public CourseController(IRepository<Course> course, IRepository<Question> question, IRepository<Option> option, IRepository<Category> category)
+        public CourseController(IRepository<Course> course, IRepository<Question> question, IRepository<Option> option, IRepository<Category> category, PRN231_ProjectContext context)
         {
             _course = course;
             _question = question;
             _option = option;
             _category = category;
+            _context = context;
         }
 
         [HttpGet("GetAllCourse")]
@@ -29,6 +33,33 @@ namespace BE.Controllers.Courses
             var courseList = await _course.GetAllAsync();
             return Ok(courseList);
         }
+
+        [HttpGet("GetAllCourseBrowse")]
+        public async Task<IActionResult> GetAllCourse()
+        {
+            var courseList = await _context.Courses
+            .Include(c => c.CategoryNavigation) // Load related Category
+            .Select(c => new GetCourseDTO
+            {
+                Id = c.Id,
+                CourseName = c.CourseName,
+                Publish = c.Publish,
+                TotalJoined = c.TotalJoined,
+                CreatedBy = c.CreatedBy,
+                CreatedAt = c.CreatedAt,
+                Image = c.Image,
+                CategoryName = c.CategoryNavigation.CategoryName // Map category name
+            }).ToListAsync();
+
+            // If the course is not found, return NotFound
+            if (courseList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(courseList);
+        }
+
 
         [HttpPut("CreateCourse")]
         public async Task<IActionResult> Put(CreateCourseWithQuestionsDTO createCourseWithQuestionsDTO)
@@ -77,7 +108,43 @@ namespace BE.Controllers.Courses
             }
         }
 
+        [HttpGet("GetCourseByID")]
+        public async Task<IActionResult> GetCourseByID(int id)
+        {
+            var courseList = await _course.GetByIdIncludeAsync(x => x.Questions, x => x.Id == id);
+            return Ok(courseList);
+        }
 
+        [HttpGet("GetCourseByNameBrowse")]
+        public async Task<IActionResult> GetCourseByIDBrowse(string name)
+        {
+            // Fetch the course by ID and include the related Questions and Category
+            var course = await _context.Courses
+                .Include(c => c.Questions) // Include the Questions related to the course
+                .Include(c => c.CategoryNavigation)  // Include the Category related to the course
+                .Where(c => c.CourseName.Contains(name))
+                .Select(c => new GetCourseDTO
+                {
+                    Id = c.Id,
+                    CourseName = c.CourseName,
+                    Publish = c.Publish,
+                    TotalJoined = c.TotalJoined,
+                    CreatedBy = c.CreatedBy,
+                    CreatedAt = c.CreatedAt,
+                    Image = c.Image,
+                    CategoryName = c.CategoryNavigation.CategoryName,
+                })
+                .FirstOrDefaultAsync();
+
+            // If the course is not found, return NotFound
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            // Return the course with category name and questions
+            return Ok(course);
+        }
 
     }
 }

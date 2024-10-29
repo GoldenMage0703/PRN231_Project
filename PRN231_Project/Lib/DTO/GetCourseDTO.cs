@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace Lib.DTO
 {
-    public class CreateCourseDTO
+    public class GetCourseDTO
     {
-        public CreateCourseDTO() { }
+        public GetCourseDTO() { }
+        public int Id { get; set; }
         public string CourseName { get; set; } = null!;
         public bool Publish { get; set; }
         public int TotalJoined { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? Image { get; set; }
-        public int Category { get; set; }
+        public string CategoryName { get; set; }
     }
 }

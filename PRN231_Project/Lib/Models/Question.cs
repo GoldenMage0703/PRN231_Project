@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Lib.Models
 {
@@ -13,7 +14,7 @@ namespace Lib.Models
         public int Id { get; set; }
         public int Course { get; set; }
         public string QuestionText { get; set; } = null!;
-
+        [JsonIgnore]
         public virtual Course CourseNavigation { get; set; } = null!;
         public virtual ICollection<Option> Options { get; set; }
     }
