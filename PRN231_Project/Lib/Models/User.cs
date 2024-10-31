@@ -19,7 +19,6 @@ namespace Lib.Models
         public string Password { get; set; } = null!;
         public int Role { get; set; }
         public DateTime Created { get; set; }
-        public byte[]? Img { get; set; }
 
         public virtual ICollection<Bill> Bills { get; set; }
         public virtual ICollection<CourseAttempt> CourseAttempts { get; set; }

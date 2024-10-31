@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.Intrinsics.X86;
+using System.Text.Json;
 using BE.Service;
 using Lib.DTO.Cart;
 using Lib.Models;
@@ -78,9 +79,51 @@ public class CartController : ControllerBase
     [HttpPost("CreatePaymentUrl")]
     public async Task<IActionResult> CreatePaymentUrl(PaymentInformationModel model)
     {
+        
+
+        var cartListJson = Request.Cookies["cartList"];
+        if (!string.IsNullOrEmpty(cartListJson))
+        {
+            cartList = JsonSerializer.Deserialize<Dictionary<int, CartDTO>>(cartListJson);
+        }
+        model.OrderDescription = "Thanh toan";
+        model.Amount = (double) cartList.Sum(x=>x.Value.Course.Price);
         var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
             
         return Ok(url);
+    }
+
+    [HttpPost("FinishPayment")]
+    public async Task<IActionResult> FinishPayment()
+    {
+        var response = _vnPayService.PaymentExecute(Request.Query);
+        var cartListJson = Request.Cookies["cartList"];
+        if (response.Success == true)
+        {
+            if (!string.IsNullOrEmpty(cartListJson))
+            {
+                cartList = JsonSerializer.Deserialize<Dictionary<int, CartDTO>>(cartListJson);
+                var totalPayment = cartList.Sum(x=>x.Value.Course.Price);
+                _billRepository.AddAsync(new Lib.Models.Bill
+                {
+                    TotalPayment = totalPayment,
+                    UserId = 1
+                });
+                var billID = _billRepository.GetLastAsync(x => x.Id).Id;
+                foreach (var item in cartList)
+                {
+                    _billDetailRepository.AddAsync(new BillDetail
+                    {
+                        BillId = billID,
+                        CourseId = item.Value.Course.Id
+                    });
+                }
+            } 
+            return Ok("Finish Payment Successfully");
+        }
+       
+
+        return BadRequest();
     }
     
 }

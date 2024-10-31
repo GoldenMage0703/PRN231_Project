@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Lib.Models
 {
@@ -20,9 +19,9 @@ namespace Lib.Models
         public DateTime CreatedAt { get; set; }
         public byte[]? Image { get; set; }
         public int Category { get; set; }
-        [JsonIgnore]
+        public decimal Price { get; set; }
+
         public virtual Category CategoryNavigation { get; set; } = null!;
-        [JsonIgnore]
         public virtual User CreatedByNavigation { get; set; } = null!;
         public virtual ICollection<CourseAttempt> CourseAttempts { get; set; }
         public virtual ICollection<Question> Questions { get; set; }

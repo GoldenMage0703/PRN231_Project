@@ -85,12 +85,12 @@ namespace Lib.Models
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CategoryName)
-                    .HasMaxLength(20)
+                    .HasMaxLength(255)
                     .HasColumnName("category_name")
                     .IsFixedLength();
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(10)
+                    .HasMaxLength(255)
                     .HasColumnName("description")
                     .IsFixedLength();
             });
@@ -104,7 +104,7 @@ namespace Lib.Models
                 entity.Property(e => e.Category).HasColumnName("category");
 
                 entity.Property(e => e.CourseName)
-                    .HasMaxLength(20)
+                    .HasMaxLength(255)
                     .HasColumnName("course_name");
 
                 entity.Property(e => e.CreatedAt)
@@ -114,9 +114,13 @@ namespace Lib.Models
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
 
                 entity.Property(e => e.Image)
-                    .HasMaxLength(20)
-                    .HasColumnName("image")
-                    .IsFixedLength();
+                    .HasColumnType("image")
+                    .HasColumnName("image");
+
+                entity.Property(e => e.Price)
+                    .HasColumnType("money")
+                    .HasColumnName("price")
+                    .HasDefaultValueSql("((10000))");
 
                 entity.Property(e => e.Publish).HasColumnName("publish");
 
@@ -126,13 +130,13 @@ namespace Lib.Models
                     .WithMany(p => p.Courses)
                     .HasForeignKey(d => d.Category)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__courses__categor__398D8EEE");
+                    .HasConstraintName("FK__courses__categor__48CFD27E");
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.Courses)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__courses__created__3A81B327");
+                    .HasConstraintName("FK__courses__created__49C3F6B7");
             });
 
             modelBuilder.Entity<CourseAttempt>(entity =>
@@ -180,7 +184,7 @@ namespace Lib.Models
                     .WithMany(p => p.Options)
                     .HasForeignKey(d => d.QuestionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__options__questio__3B75D760");
+                    .HasConstraintName("FK__options__questio__4AB81AF0");
             });
 
             modelBuilder.Entity<Question>(entity =>
@@ -199,7 +203,7 @@ namespace Lib.Models
                     .WithMany(p => p.Questions)
                     .HasForeignKey(d => d.Course)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__questions__cours__3C69FB99");
+                    .HasConstraintName("FK__questions__cours__4BAC3F29");
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -213,28 +217,24 @@ namespace Lib.Models
                     .HasColumnName("created");
 
                 entity.Property(e => e.DisplayName)
-                    .HasMaxLength(20)
+                    .HasMaxLength(255)
                     .HasColumnName("display_name")
                     .IsFixedLength();
 
                 entity.Property(e => e.Email)
-                    .HasMaxLength(10)
+                    .HasMaxLength(255)
                     .HasColumnName("email")
                     .IsFixedLength();
 
-                entity.Property(e => e.Img)
-                    .HasColumnType("image")
-                    .HasColumnName("img");
-
                 entity.Property(e => e.Password)
-                    .HasMaxLength(25)
+                    .HasMaxLength(255)
                     .HasColumnName("password")
                     .IsFixedLength();
 
                 entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.Username)
-                    .HasMaxLength(10)
+                    .HasMaxLength(255)
                     .HasColumnName("username")
                     .IsFixedLength();
             });
