@@ -16,6 +16,7 @@ namespace Lib.Repository
         Task<T> GetByIdAsync(int id);
         Task<T> GetByIdIncludeAsync<TKey>(Expression<Func<T, TKey>> keySelector, Expression<Func<T, bool>> predicate);
         Task AddAsync(T entity);
+        Task AddRangeAsync(ICollection<T> entityList);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
         Task DeleteRangeAsync(ICollection<T> list);
