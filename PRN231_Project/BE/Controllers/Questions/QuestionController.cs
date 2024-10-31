@@ -92,8 +92,25 @@ namespace BE.Controllers.Questions
 
             return Ok(questionList);
         }
-            
-           
+
+        [HttpPost("CreateQuestion")]
+        public async Task<IActionResult> CreateQuestion([FromBody] CreateQuestionDTO question,int courseID)
+        {
+           await _question.AddAsync(new Question
+            {
+                Course = courseID,
+                QuestionText = question.QuestionText,
+            });
+            var questionId =await _question.GetLastAsync(x => x.Id);
+            var listOption = (ICollection<Option>)question.Options.Select(x => new Option
+            {
+                QuestionId = _question.GetLastAsync(x => x.Id).Id,
+                IsCorrect = x.isCorrect,
+                OptionText = x.OptionText,
+            }).ToList();
+            _option.AddRangeAsync(listOption);
+            return Ok();
+        }
         }
 
     }

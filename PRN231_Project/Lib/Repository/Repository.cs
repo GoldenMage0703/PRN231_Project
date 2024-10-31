@@ -35,6 +35,12 @@ namespace Lib.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddRangeAsync(ICollection<T> entityList)
+        {
+           await _context.Set<T>().AddRangeAsync(entityList);
+           await _context.SaveChangesAsync();   
+        }
+
         public async Task UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
