@@ -27,10 +27,10 @@ namespace BE.Controllers.Login
 			_config = config;
 		}
 
-		private UserDTO ConvertToUserDTO(Lib.Models.User user)
+		private UserRegisterDTO ConvertToUserDTO(Lib.Models.User user)
 		{
-			return new UserDTO
-			{
+			return new UserRegisterDTO
+            {
 				Username = user.Username,
 				Password = user.Password,
 				Email = user.Email,

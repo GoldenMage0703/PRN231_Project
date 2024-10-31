@@ -21,12 +21,23 @@ namespace BE.Controllers.Questions
         }
 
         [HttpGet("GetQuestionByCourse")]
-        public async Task<IActionResult> Get(int courseID) {
-        
-            var list= await _question.FindIncludeAsync(x=>x.Options,x=>x.Course == courseID);
-            //var list = await _question.GetAllAsync();
-            return Ok(list);
+        public async Task<IActionResult> Get(int courseID)
+        {
+            var questions = await _question.FindIncludeAsync(x => x.Options, x => x.Course == courseID);
+            var questionDtos = questions.Select(q => new QuestionDTO
+            {
+                Id = q.Id,
+                QuestionText = q.QuestionText,
+                Options = q.Options.Select(o => new OptionDTO
+                {
+                    Id = o.Id,
+                    OptionText = o.OptionText
+                }).ToList()
+            }).ToList();
+
+            return Ok(questionDtos);
         }
+
         [HttpGet("GetQuestionByID")]
         public async Task<IActionResult> GetQues(int id)
         {
