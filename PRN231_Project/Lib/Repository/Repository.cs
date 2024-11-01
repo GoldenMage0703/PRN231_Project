@@ -97,5 +97,10 @@ namespace Lib.Repository
             _context.Set<T>().UpdateRange(list);
             await _context.SaveChangesAsync();
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
