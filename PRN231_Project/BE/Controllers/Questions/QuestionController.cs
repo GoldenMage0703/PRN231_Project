@@ -140,7 +140,7 @@ namespace BE.Controllers.Questions
                 var fileBytes = memoryStream.ToArray();
 
                 // Use the ExcelReaderUtil to parse the file
-                questions = ExcelReaderUtil.ReadQuestionsFromExcelss(fileBytes);
+                questions = ExcelReaderUtil.ReadQuestionsFromExcel(fileBytes);
             }
 
             var questionEntities = questions.Select(q => new Question
