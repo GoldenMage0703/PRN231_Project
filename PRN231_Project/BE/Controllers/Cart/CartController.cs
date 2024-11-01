@@ -63,7 +63,7 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("GetAllItemsinCart")]
+    [HttpGet("GetAllItemsInCart")]
     public async Task<IActionResult> GetAllItemsinCart()
     {
         var cartListJson = Request.Cookies["cartList"];
