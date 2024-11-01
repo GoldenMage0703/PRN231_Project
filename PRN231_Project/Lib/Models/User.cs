@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lib.Models
 {
@@ -19,9 +20,10 @@ namespace Lib.Models
         public string Password { get; set; } = null!;
         public int Role { get; set; }
         public DateTime Created { get; set; }
-        public byte[]? Img { get; set; }
-
-        public virtual ICollection<Bill> Bills { get; set; }
+		[NotMapped]
+		public byte[]? Img { get; set; }
+		
+		public virtual ICollection<Bill> Bills { get; set; }
         public virtual ICollection<CourseAttempt> CourseAttempts { get; set; }
         public virtual ICollection<Course> Courses { get; set; }
     }

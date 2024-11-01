@@ -25,12 +25,17 @@ namespace Lib.Models
         public virtual DbSet<Question> Questions { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		public Task FindByEmailAsync(string email)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server=TUANNM\\SQLEXPRESS; database=PRN231_Project;user=sa;password=12345;Integrated Security=true;TrustServerCertificate=Yes");
+                optionsBuilder.UseSqlServer("server=TUANNM\\SQLEXPRESS; database=PRN231_Project;user=sa;password=1234578;Integrated Security=true;TrustServerCertificate=Yes");
             }
         }
 

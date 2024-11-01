@@ -87,9 +87,7 @@ policy =>
 });
 
 builder.Services.AddScoped<Lib.DTO.Password.IEmailService, Lib.DTO.Password.EmailService>();
-
-
-
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

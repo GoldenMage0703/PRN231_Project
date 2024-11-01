@@ -38,10 +38,20 @@ namespace Lib.DTO.Password
 			email.Body = new TextPart("plain") { Text = body };
 
 			using var smtp = new SmtpClient();
-			await smtp.ConnectAsync(_configuration["EmailSettings:SmtpServer"], int.Parse(_configuration["EmailSettings:Port"]), MailKit.Security.SecureSocketOptions.StartTls);
+
+			// Kết nối tới máy chủ SMTP của Gmail
+			await smtp.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+
+			// Xác thực bằng tài khoản email và mật khẩu ứng dụng
 			await smtp.AuthenticateAsync(_configuration["EmailSettings:SenderEmail"], _configuration["EmailSettings:SenderPassword"]);
+
+			// Gửi email
 			await smtp.SendAsync(email);
+
+			// Ngắt kết nối
 			await smtp.DisconnectAsync(true);
 		}
+
+
 	}
 }
