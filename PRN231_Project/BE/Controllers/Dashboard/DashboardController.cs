@@ -21,6 +21,7 @@ namespace BE.Controllers
 		}
 
 		[HttpGet]
+		[Route("GetUser")]
 		public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
 		{
 			// Truy xuất tất cả người dùng từ cơ sở dữ liệu
@@ -42,6 +43,7 @@ namespace BE.Controllers
 			return _context.Users.Any(e => e.Id == id);
 		}
 		[HttpPost]
+		[Route("CreateNewUser")]
 		public async Task<ActionResult<UserDTO>> CreateUser(UserDTO userDTO)
 		{
 			var user = new Lib.Models.User
@@ -62,7 +64,8 @@ namespace BE.Controllers
 
 			return CreatedAtAction(nameof(CreateUser), new { id = user.Id }, user);
 		}
-		[HttpDelete("{id}")]
+		[HttpDelete]
+		[Route("DeleteUser")]
 		public async Task<IActionResult> DeleteUser(int id)
 		{
 			var user = await _context.Users.FindAsync(id);
@@ -75,7 +78,8 @@ namespace BE.Controllers
 			return Ok(new {message = "Delete successfully"});
 		}
 
-		[HttpPut("{id}")]
+		[HttpPut]
+		[Route("UpdateUser")]
 		public async Task<IActionResult> UpdateUser(int id, UserDTO userDTO)
 		{
 			// Tìm kiếm người dùng theo id

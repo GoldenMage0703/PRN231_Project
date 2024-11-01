@@ -8,6 +8,10 @@
 
   <ItemGroup>
 
+    <PackageReference Include="MailKit" Version="4.8.0" />
+
+    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
+
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
  
   </ItemGroup>
