@@ -132,43 +132,50 @@ namespace BE.Controllers.Questions
             }
 
             List<CreateQuestionDTO> questions;
-
-            // Read and parse the uploaded file
-            using (var memoryStream = new MemoryStream())
+            try
             {
-                await file.CopyToAsync(memoryStream);
-                var fileBytes = memoryStream.ToArray();
-
-                // Use the ExcelReaderUtil to parse the file
-                questions = ExcelReaderUtil.ReadQuestionsFromExcel(fileBytes);
-            }
-
-            var questionEntities = questions.Select(q => new Question
-            {
-                Course = courseId,
-                QuestionText = q.QuestionText,
-            }).ToList();
-
-            await _question.AddRangeAsync(questionEntities);
-            await _question.SaveChangesAsync();
-
-            var optionEntities = new List<Option>();
-
-            foreach (var questionEntity in questionEntities)
-            {
-                var question = questions.First(q => q.QuestionText == questionEntity.QuestionText);
-                var options = question.Options.Select(o => new Option
+                using (var memoryStream = new MemoryStream())
                 {
-                    QuestionId = questionEntity.Id,
-                    IsCorrect = o.isCorrect,
-                    OptionText = o.OptionText,
-                });
+                    await file.CopyToAsync(memoryStream);
+                    var fileBytes = memoryStream.ToArray();
 
-                optionEntities.AddRange(options);
+                    // Use the ExcelReaderUtil to parse the file
+                    questions = ExcelReaderUtil.ReadQuestionsFromExcel(fileBytes);
+                }
+
+                var questionEntities = questions.Select(q => new Question
+                {
+                    Course = courseId,
+                    QuestionText = q.QuestionText,
+                }).ToList();
+
+                await _question.AddRangeAsync(questionEntities);
+            
+
+                var optionEntities = new List<Option>();
+
+                foreach (var questionEntity in questionEntities)
+                {
+                    var question = questions.First(q => q.QuestionText == questionEntity.QuestionText);
+                    var options = question.Options.Select(o => new Option
+                    {
+                        QuestionId = questionEntity.Id,
+                        IsCorrect = o.isCorrect,
+                        OptionText = o.OptionText,
+                    });
+
+                    optionEntities.AddRange(options);
+                }
+
+                await _option.AddRangeAsync(optionEntities);
             }
-
-            await _option.AddRangeAsync(optionEntities);
-            await _option.SaveChangesAsync();
+            catch (Exception e)
+            {
+                return BadRequest("File is wrong with format    .");
+            }
+            // Read and parse the uploaded file
+            
+           
 
             return Ok(questions);
         }

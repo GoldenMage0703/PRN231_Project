@@ -36,7 +36,7 @@ namespace Lib.File_Utils
                     {
                         string questionText = worksheet.Cells[row, 1].Text;
                         string optionText = worksheet.Cells[row, 2].Text;
-                        bool isCorrect = worksheet.Cells[row, 3].Text.ToUpper() == "TRUE";
+                        bool isCorrect =  bool.Parse(worksheet.Cells[row, 3].Text);
 
                         // If the question text is not empty, create or find the question
                         if (!string.IsNullOrWhiteSpace(questionText))
