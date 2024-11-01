@@ -1,5 +1,6 @@
 ﻿using Lib.DTO.Options;
 using Lib.DTO.Question;
+using Lib.File_Utils;
 using Lib.Models;
 using Lib.Repository;
 using Microsoft.AspNetCore.Http;
@@ -21,12 +22,23 @@ namespace BE.Controllers.Questions
         }
 
         [HttpGet("GetQuestionByCourse")]
-        public async Task<IActionResult> Get(int courseID) {
-        
-            var list= await _question.FindIncludeAsync(x=>x.Options,x=>x.Course == courseID);
-            //var list = await _question.GetAllAsync();
-            return Ok(list);
+        public async Task<IActionResult> Get(int courseID)
+        {
+            var questions = await _question.FindIncludeAsync(x => x.Options, x => x.Course == courseID);
+            var questionDtos = questions.Select(q => new QuestionDTO
+            {
+                Id = q.Id,
+                QuestionText = q.QuestionText,
+                Options = q.Options.Select(o => new OptionDTO
+                {
+                    Id = o.Id,
+                    OptionText = o.OptionText
+                }).ToList()
+            }).ToList();
+
+            return Ok(questionDtos);
         }
+
         [HttpGet("GetQuestionByID")]
         public async Task<IActionResult> GetQues(int id)
         {
@@ -64,7 +76,7 @@ namespace BE.Controllers.Questions
                   await  _option.AddAsync(new Option {
                        QuestionId = questionList.Id,
                        OptionText = option.OptionText,
-                       IsCorrect = option.isTrue          
+                       IsCorrect = option.isCorrect          
                     });
                     continue;
                 }
@@ -72,7 +84,7 @@ namespace BE.Controllers.Questions
                 {
                     var prevOption =  await _option.GetByIdAsync(option.id);
                     prevOption.OptionText = option.OptionText;
-                    prevOption.IsCorrect = option.isTrue;
+                    prevOption.IsCorrect = option.isCorrect;
                   await  _option.UpdateAsync(prevOption);
                 }
             }
@@ -81,10 +93,95 @@ namespace BE.Controllers.Questions
 
             return Ok(questionList);
         }
+
+        [HttpPost("CreateQuestion")]
+        public async Task<IActionResult> CreateQuestion([FromBody] CreateQuestionDTO question,int courseID)
+        {
+            var questionToAdd = new Question
+            {
+                Course = courseID,
+                QuestionText = question.QuestionText,
+            };
+           await _question.AddAsync(questionToAdd);
+            
+            var listOption = (ICollection<Option>)question.Options.Select(x => new Option
+            {
+                QuestionId = questionToAdd.Id,
+                IsCorrect = x.isCorrect,
+                OptionText = x.OptionText,
+            }).ToList();
+            await _option.AddRangeAsync(listOption);
+            return Ok();
+        }
+        [HttpPost("DownloadInportQuestionTemplate")]
+        public async Task<IActionResult> Download()
+        {
+            var fileBytes = ExcelGeneratorUtil.GenerateExcelFile();
+            var fileName = "Questions.xlsx";
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            return File(fileBytes, contentType, fileName);
+
+        }
+        [HttpPost("ImportListQuestion")]
+        public async Task<IActionResult> ImportListQuestion(IFormFile file, int courseId)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("File is not selected or empty.");
+            }
+
+            List<CreateQuestionDTO> questions;
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    var fileBytes = memoryStream.ToArray();
+
+                    // Use the ExcelReaderUtil to parse the file
+                    questions = ExcelReaderUtil.ReadQuestionsFromExcel(fileBytes);
+                }
+
+                var questionEntities = questions.Select(q => new Question
+                {
+                    Course = courseId,
+                    QuestionText = q.QuestionText,
+                }).ToList();
+
+                await _question.AddRangeAsync(questionEntities);
+            
+
+                var optionEntities = new List<Option>();
+
+                foreach (var questionEntity in questionEntities)
+                {
+                    var question = questions.First(q => q.QuestionText == questionEntity.QuestionText);
+                    var options = question.Options.Select(o => new Option
+                    {
+                        QuestionId = questionEntity.Id,
+                        IsCorrect = o.isCorrect,
+                        OptionText = o.OptionText,
+                    });
+
+                    optionEntities.AddRange(options);
+                }
+
+                await _option.AddRangeAsync(optionEntities);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("File is wrong with format    .");
+            }
+            // Read and parse the uploaded file
             
            
+
+            return Ok(questions);
         }
 
     }
+
+}
 
 

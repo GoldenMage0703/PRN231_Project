@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NETCore.MailKit.Core;
 using System.Text;
+using BE.Service;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,6 +76,8 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddDbContext<PRN231_ProjectContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("Test") ?? throw new InvalidOperationException("Connection string not found.")));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+
 builder.Services.AddCors(options =>
 {
 options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -82,7 +85,8 @@ policy =>
     {
         policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:3000")
         .AllowAnyHeader()
-        .AllowAnyMethod(); ;
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 

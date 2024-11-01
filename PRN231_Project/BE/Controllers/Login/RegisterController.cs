@@ -25,7 +25,7 @@ namespace BE.Controllers.Login
 				Password = userRegister.Password,  // Lưu mật khẩu trực tiếp
 				DisplayName = userRegister.DisplayName,
 				Email = userRegister.Email,
-
+				Status = 1,
                 Role = 3
 			};
 

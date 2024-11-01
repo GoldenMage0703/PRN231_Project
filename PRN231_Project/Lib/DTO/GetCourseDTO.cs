@@ -15,7 +15,7 @@ namespace Lib.DTO
         public int TotalJoined { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
         public string CategoryName { get; set; }
     }
 }

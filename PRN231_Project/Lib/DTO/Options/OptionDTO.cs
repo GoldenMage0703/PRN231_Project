@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Lib.DTO.Options
 {
-    public class CreateOptionDTO
+    public class OptionDTO
     {
-        public string OptionText { get; set; } = null!;
-        public bool isCorrect { get; set; } = false;
+        public int Id { get; set; }
+        public string OptionText { get; set; }
     }
 }

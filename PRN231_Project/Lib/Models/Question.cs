@@ -16,6 +16,7 @@ namespace Lib.Models
         public string QuestionText { get; set; } = null!;
         [JsonIgnore]
         public virtual Course CourseNavigation { get; set; } = null!;
+        
         public virtual ICollection<Option> Options { get; set; }
     }
 }
