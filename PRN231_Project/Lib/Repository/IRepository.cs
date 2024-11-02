@@ -19,6 +19,8 @@ namespace Lib.Repository
         Task AddRangeAsync(ICollection<T> entityList);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
+
+        Task SaveChangesAsync();
         Task DeleteRangeAsync(ICollection<T> list);
         Task UpdateRangeAsync(ICollection<T> list);
 

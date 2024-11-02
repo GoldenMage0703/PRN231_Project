@@ -1,11 +1,14 @@
 using Lib.Models;
 using Lib.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NETCore.MailKit.Core;
 using System.Text;
 using BE.Service;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -35,6 +38,10 @@ builder.Services.AddAuthentication(options =>
 	options.ClientSecret = builder.Configuration["Google:ClientSecret"];
 });
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromHours(1);
+});
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -83,6 +90,9 @@ policy =>
         .AllowCredentials();
     });
 });
+
+builder.Services.AddScoped<Lib.DTO.Password.IEmailService, Lib.DTO.Password.EmailService>();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
