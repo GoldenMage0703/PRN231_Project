@@ -26,7 +26,7 @@ namespace BE.Controllers.Login
 				DisplayName = userRegister.DisplayName,
 				Email = userRegister.Email,
 				Status = 1,
-                Role = 3
+                Role = 2
 			};
 
 			// Lưu người dùng vào cơ sở dữ liệu

@@ -41,7 +41,7 @@ namespace BE.Controllers.Login
                 new Claim("username", user.Username.Trim()), // Trimmed username
                 new Claim("id", user.Id.ToString()), // User ID
                 new Claim("displayName", user.DisplayName.Trim()), // Trimmed display name
-                new Claim(JwtRegisteredClaimNames.Email, user.Email.Trim()), // Trimmed email
+                new Claim("mail", user.Email.Trim()), // Trimmed email
                 new Claim(ClaimTypes.Role, user.Role.ToString()) // Role as a string
             };
 
@@ -78,7 +78,7 @@ namespace BE.Controllers.Login
             var usernameClaim = User.FindFirst("username");
             var userIdClaim = User.FindFirst("id"); // Custom claim for user ID
             var displayNameClaim = User.FindFirst("displayName"); // Custom claim for display name
-            var emailClaim = User.FindFirst(JwtRegisteredClaimNames.Email); // Email claim
+            var emailClaim = User.FindFirst("mail"); // Email claim
             var roleClaim = User.FindFirst(ClaimTypes.Role); // Role claim
 
             if (usernameClaim == null)

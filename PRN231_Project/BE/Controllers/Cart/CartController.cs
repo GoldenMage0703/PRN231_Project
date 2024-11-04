@@ -31,17 +31,8 @@ public class CartController : ControllerBase
     [HttpPost("CreatePaymentUrl")]
     public async Task<IActionResult> CreatePaymentUrl(PaymentInformationModel model)
     {
-        
-
-        var cartListJson = Request.Cookies["cartList"];
-        if (!string.IsNullOrEmpty(cartListJson))
-        {
-            cartList = JsonSerializer.Deserialize<Dictionary<int, CartDTO>>(cartListJson);
-        }
-        model.OrderDescription = "Thanh toan";
-        model.Amount = (double) cartList.Sum(x=>x.Value.Course.Price);
         var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
-            
+
         return Ok(url);
     }
 
