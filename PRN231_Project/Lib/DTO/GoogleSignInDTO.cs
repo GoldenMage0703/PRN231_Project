@@ -9,7 +9,6 @@ namespace Lib.DTO
 	public class GoogleSignInDTO
 	{
 		public string GoogleIdToken { get; set; } // Mã token ID từ Google
-		public string Email { get; set; } 
-		public string DisplayName { get; set; } 
+		
 	}
 }

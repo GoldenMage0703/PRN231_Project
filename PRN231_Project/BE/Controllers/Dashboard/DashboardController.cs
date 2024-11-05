@@ -22,7 +22,7 @@ namespace BE.Controllers
 
 		[HttpGet]
 		[Route("GetUser")]
-		public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+		public async Task<ActionResult<IEnumerable<UserRegisterDTO>>> GetUsers()
 		{
 			// Truy xuất tất cả người dùng từ cơ sở dữ liệu
 			var users = await _context.Users
@@ -44,7 +44,7 @@ namespace BE.Controllers
 		}
 		[HttpPost]
 		[Route("CreateNewUser")]
-		public async Task<ActionResult<UserDTO>> CreateUser(UserDTO userDTO)
+		public async Task<ActionResult<UserDTO>> CreateUser(UserRegisterDTO userDTO)
 		{
 			var user = new Lib.Models.User
 			{
@@ -80,7 +80,7 @@ namespace BE.Controllers
 
 		[HttpPut]
 		[Route("UpdateUser")]
-		public async Task<IActionResult> UpdateUser(int id, UserDTO userDTO)
+		public async Task<IActionResult> UpdateUser(int id, UserRegisterDTO userDTO)
 		{
 			// Tìm kiếm người dùng theo id
 			var user = await _context.Users.FindAsync(id);
