@@ -32,7 +32,8 @@ namespace BE.Controllers.Questions
                 Options = q.Options.Select(o => new OptionDTO
                 {
                     Id = o.Id,
-                    OptionText = o.OptionText
+                    OptionText = o.OptionText,
+                    IsCorrect = o.IsCorrect,
                 }).ToList()
             }).ToList();
 

@@ -8,7 +8,6 @@ namespace Lib.DTO.Password
 {
 	public class ResetPasswordDTO
 	{
-		public int UserId { get; set; }
 		public string Token { get; set; }
 		public string NewPassword { get; set; }
 	}

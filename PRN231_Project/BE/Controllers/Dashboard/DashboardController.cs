@@ -20,6 +20,7 @@ namespace BE.Controllers
 			_context = context;
 		}
 
+
 		[HttpGet]
 		[Route("GetUser")]
 		public async Task<ActionResult<IEnumerable<UserRegisterDTO>>> GetUsers()
@@ -116,6 +117,7 @@ namespace BE.Controllers
 
 			return Ok(new { message = "User updated successfully." });
 		}
+
 		[HttpGet("TotalRevenue")]
 		public async Task<ActionResult<decimal>> GetTotalRevenue()
 		{
