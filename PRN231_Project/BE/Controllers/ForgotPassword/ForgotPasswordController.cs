@@ -55,7 +55,7 @@ namespace BE.Controllers.Login
 		}
 		private string GenerateResetUrl(string token)
 		{
-			return $"http://localhost:5001/api/ForgotPassword/reset-password?token={token}";
+			return $"http://localhost:3000/auth/resetpw?token={token}";
 		}
 
 		[HttpPost]
