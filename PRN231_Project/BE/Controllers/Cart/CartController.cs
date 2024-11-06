@@ -17,12 +17,14 @@ public class CartController : ControllerBase
     private readonly IRepository<Course> _courseRepository;
     private readonly IRepository<Lib.Models.Bill> _billRepository;
     private readonly PRN231_ProjectContext _context;
+    private readonly IRepository<CourseAttempt> _courseAttemptRepository;
     private readonly IVnPayService _vnPayService;
 
 
     public CartController(IVnPayService vnPayService, IRepository<Lib.Models.Bill> billRepository,
-        IRepository<Course> courseRepository, PRN231_ProjectContext context)
+        IRepository<Course> courseRepository, PRN231_ProjectContext context, IRepository<CourseAttempt> cours)
     {
+        _courseAttemptRepository = cours;
         _context = context;
         _vnPayService = vnPayService;
         _courseRepository = courseRepository;
@@ -89,6 +91,13 @@ public class CartController : ControllerBase
                 foreach (var item in courseToAdd)
                 {
                     bill.Courses.Add(item);
+                    await _courseAttemptRepository.AddAsync(new CourseAttempt
+                    {
+                        CourseId = item.Id,
+                        UserId = userId,
+                        AttemptDate = DateTime.UtcNow,
+                    });
+
                 }
                 await _billRepository.AddAsync(bill);
 
