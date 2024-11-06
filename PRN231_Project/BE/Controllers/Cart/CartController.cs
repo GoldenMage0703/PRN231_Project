@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
+using System.Web;
 using BE.Service;
 using Lib.DTO.Cart;
 using Lib.Models;
@@ -39,7 +40,7 @@ public class CartController : ControllerBase
     }
 
     [HttpPost("FinishPayment")]
-    public async Task<IActionResult> FinishPayment([FromBody] PaymentRequestDTO paymentRequest)
+    public async Task<IActionResult> FinishPayment([FromBody] PaymentRequestDTO paymentRequest, string cartListJson)
     {
         var queryDictionary = new Dictionary<string, StringValues>
         {
@@ -64,14 +65,14 @@ public class CartController : ControllerBase
         var response = _vnPayService.PaymentExecute(rq); // Adjust this method accordingly
 
         // Retrieve the cart list from cookies
-        var cartListJson = Request.Cookies["cartList"];
         if (response.Success)
         {
             if (!string.IsNullOrEmpty(cartListJson))
             {
                 // Deserialize the cart list from JSON
-                var cartList = JsonSerializer.Deserialize<Dictionary<int, CartDTO>>(cartListJson);
-                var totalPayment = cartList.Sum(x => x.Value.Course.Price);
+                string decodedCartListJson = HttpUtility.UrlDecode(cartListJson);
+                var cartList = JsonSerializer.Deserialize<Dictionary<int, CartDTO>>(decodedCartListJson);
+                var totalPayment = cartList.Sum(x => x.Value.price);
 
                 // Create and save the bill
                 var bill = new Lib.Models.Bill
@@ -81,16 +82,13 @@ public class CartController : ControllerBase
                 };
                 await _billRepository.AddAsync(bill);
 
-                // Get the last inserted bill ID
-                var billID = (await _billRepository.GetLastAsync(x => x.Id)).Id;
-
                 // Add bill details for each course in the cart
                 foreach (var item in cartList)
                 {
                     var billDetail = new BillDetail
                     {
-                        BillId = billID,
-                        CourseId = item.Value.Course.Id
+                        BillId = bill.Id,
+                        CourseId = item.Value.CourseId
                     };
                     await _billDetailRepository.AddAsync(billDetail);
                 }

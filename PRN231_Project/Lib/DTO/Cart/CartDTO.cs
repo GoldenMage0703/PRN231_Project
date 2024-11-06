@@ -2,5 +2,6 @@
 
 public class CartDTO
 {
-    public Models.Course Course {get; set;}
+    public int CourseId {get; set;}
+    public decimal price { get; set;}
 }
