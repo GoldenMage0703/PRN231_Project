@@ -9,6 +9,7 @@ namespace Lib.Models
         {
             CourseAttempts = new HashSet<CourseAttempt>();
             Questions = new HashSet<Question>();
+            Bills = new HashSet<Bill>();
         }
 
         public int Id { get; set; }
@@ -19,11 +20,13 @@ namespace Lib.Models
         public DateTime CreatedAt { get; set; }
         public byte[]? Image { get; set; }
         public int Category { get; set; }
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
 
         public virtual Category CategoryNavigation { get; set; } = null!;
         public virtual User CreatedByNavigation { get; set; } = null!;
         public virtual ICollection<CourseAttempt> CourseAttempts { get; set; }
         public virtual ICollection<Question> Questions { get; set; }
+
+        public virtual ICollection<Bill> Bills { get; set; }
     }
 }

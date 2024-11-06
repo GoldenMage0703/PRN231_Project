@@ -16,17 +16,17 @@ public class CartController : ControllerBase
 {
     private readonly IRepository<Course> _courseRepository;
     private readonly IRepository<Lib.Models.Bill> _billRepository;
-    private readonly IRepository<BillDetail> _billDetailRepository;
+    private readonly PRN231_ProjectContext _context;
     private readonly IVnPayService _vnPayService;
 
 
     public CartController(IVnPayService vnPayService, IRepository<Lib.Models.Bill> billRepository,
-        IRepository<Course> courseRepository, IRepository<BillDetail> billDetailRepository)
+        IRepository<Course> courseRepository, PRN231_ProjectContext context)
     {
+        _context = context;
         _vnPayService = vnPayService;
         _courseRepository = courseRepository;
         _billRepository = billRepository;
-        _billDetailRepository = billDetailRepository;
     }
 
     public Dictionary<int, CartDTO> cartList;
@@ -72,6 +72,12 @@ public class CartController : ControllerBase
                 // Deserialize the cart list from JSON
                 string decodedCartListJson = HttpUtility.UrlDecode(cartListJson);
                 var cartList = JsonSerializer.Deserialize<Dictionary<int, CartDTO>>(decodedCartListJson);
+                var courseList = cartList.Keys.ToList();
+                var courseToAdd = _context.Courses
+                    .Where(x => courseList.Contains(x.Id))
+                    .ToList();
+
+
                 var totalPayment = cartList.Sum(x => x.Value.price);
 
                 // Create and save the bill
@@ -80,18 +86,13 @@ public class CartController : ControllerBase
                     TotalPayment = totalPayment,
                     UserId = 1 // Consider replacing with the actual user ID
                 };
+                foreach (var item in courseToAdd)
+                {
+                    bill.Courses.Add(item);
+                }
                 await _billRepository.AddAsync(bill);
 
                 // Add bill details for each course in the cart
-                foreach (var item in cartList)
-                {
-                    var billDetail = new BillDetail
-                    {
-                        BillId = bill.Id,
-                        CourseId = item.Value.CourseId
-                    };
-                    await _billDetailRepository.AddAsync(billDetail);
-                }
             }
 
             return Ok("Finish Payment Successfully");
