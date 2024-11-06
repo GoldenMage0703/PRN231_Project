@@ -40,7 +40,7 @@ public class CartController : ControllerBase
     }
 
     [HttpPost("FinishPayment")]
-    public async Task<IActionResult> FinishPayment([FromBody] PaymentRequestDTO paymentRequest, string cartListJson)
+    public async Task<IActionResult> FinishPayment([FromBody] PaymentRequestDTO paymentRequest, [FromHeader] string cartListJson, [FromHeader] int userId)
     {
         var queryDictionary = new Dictionary<string, StringValues>
         {
@@ -84,7 +84,7 @@ public class CartController : ControllerBase
                 var bill = new Lib.Models.Bill
                 {
                     TotalPayment = totalPayment,
-                    UserId = 1 // Consider replacing with the actual user ID
+                    UserId = userId // Consider replacing with the actual user ID
                 };
                 foreach (var item in courseToAdd)
                 {
