@@ -37,25 +37,33 @@ namespace BE.Controllers.Courses
         }
 
         [HttpGet("GetAllCourseBrowse")]
-        public async Task<IActionResult> GetAllCourse()
+        public async Task<IActionResult> GetAllCourse(int userId)
         {
-            var courseList = await _context.Courses
-            .Include(c => c.CategoryNavigation) // Load related Category
-            .Select(c => new GetCourseDTO
-            {
-                Id = c.Id,
-                CourseName = c.CourseName,
-                Publish = c.Publish,
-                TotalJoined = c.TotalJoined,
-                CreatedBy = c.CreatedBy,
-                CreatedAt = c.CreatedAt,
-                Image = c.Image,
-                Price = c.Price,
-                CategoryName = c.CategoryNavigation.CategoryName // Map category name
-            }).ToListAsync();
+            // Step 1: Get the list of courses the user has attempted
+            var attemptedCourseIds = await _context.CourseAttempts
+                .Where(x => x.UserId == userId)
+                .Select(x => x.CourseId)  // Get only the CourseIds
+                .ToListAsync();
 
-            // If the course is not found, return NotFound
-            if (courseList == null)
+            // Step 2: Get all courses excluding the ones the user has already attempted
+            var courseList = await _context.Courses
+                .Include(c => c.CategoryNavigation) // Load related Category
+                .Where(c => !attemptedCourseIds.Contains(c.Id)) // Exclude attempted courses
+                .Select(c => new GetCourseDTO
+                {
+                    Id = c.Id,
+                    CourseName = c.CourseName,
+                    Publish = c.Publish,
+                    TotalJoined = c.TotalJoined,
+                    CreatedBy = c.CreatedBy,
+                    CreatedAt = c.CreatedAt,
+                    Image = c.Image,
+                    Price = c.Price,
+                    CategoryName = c.CategoryNavigation.CategoryName // Map category name
+                }).ToListAsync();
+
+            // If no courses are found, return NotFound
+            if (courseList == null || !courseList.Any())
             {
                 return NotFound();
             }
@@ -141,19 +149,26 @@ namespace BE.Controllers.Courses
         [HttpGet("GetMyAttemptCourse")]
         public async Task<IActionResult> GetMyAttemptCourse(int userId)
         {
-            var respone = _context.CourseAttempts.Where(x=>x.UserId == userId).Select(c=>new GetCourseDTO
-            {
-                Id = c.CourseId,
-                CourseName = c.Course.CourseName,
-                Publish = c.Course.Publish,
-                TotalJoined = c.Course.TotalJoined,
-                CreatedBy = c.Course.CreatedBy,
-                CreatedAt = c.Course.CreatedAt,
-                Image = c.Course.Image,
-                Price = c.Course.Price,
-                CategoryName = c.Course.CategoryNavigation.CategoryName // Map category name
-            });
-            return Ok(respone);
+            var response = await _context.CourseAttempts
+                .Where(x => x.UserId == userId)
+                .Select(c => new GetCourseDTO
+                {
+                    Id = c.CourseId,
+                    CourseName = c.Course.CourseName,
+                    Publish = c.Course.Publish,
+                    TotalJoined = c.Course.TotalJoined,
+                    CreatedBy = c.Course.CreatedBy,
+                    CreatedAt = c.Course.CreatedAt,
+                    Image = c.Course.Image,
+                    Price = c.Course.Price,
+                    CategoryName = c.Course.CategoryNavigation.CategoryName // Map category name
+                })
+                .ToListAsync(); // Fetch all data first
+
+            // Now apply DistinctBy on the client side
+            var distinctResponse = response.DistinctBy(x => x.Id).ToList();
+
+            return Ok(distinctResponse);
         }
 
 
