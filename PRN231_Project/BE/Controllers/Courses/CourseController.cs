@@ -18,8 +18,10 @@ namespace BE.Controllers.Courses
         private readonly IRepository<Question> _question;
         private readonly IRepository<Option> _option;
         private readonly IRepository<Category> _category;
-        public CourseController(IRepository<Course> course, IRepository<Question> question, IRepository<Option> option, IRepository<Category> category, PRN231_ProjectContext context)
+        private readonly IRepository<CourseAttempt> _courseAttempt;
+        public CourseController(IRepository<Course> course, IRepository<CourseAttempt> courseAttempt, IRepository<Question> question, IRepository<Option> option, IRepository<Category> category, PRN231_ProjectContext context)
         {
+            _courseAttempt = courseAttempt;
             _course = course;
             _question = question;
             _option = option;
@@ -60,6 +62,26 @@ namespace BE.Controllers.Courses
 
             return Ok(courseList);
         }
+
+        [HttpGet("GetMyManageCourse")]
+        public async Task<IActionResult> Detail(int userId) {
+            var courseList = await _context.Courses
+               .Include(c => c.CategoryNavigation).Where(x=>x.CreatedBy == userId) // Load related Category
+               .Select(c => new GetCourseDTO
+               {
+                   Id = c.Id,
+                   CourseName = c.CourseName,
+                   Publish = c.Publish,
+                   TotalJoined = c.TotalJoined,
+                   CreatedBy = c.CreatedBy,
+                   CreatedAt = c.CreatedAt,
+                   Image = c.Image,
+                   Price = c.Price,
+                   CategoryName = c.CategoryNavigation.CategoryName // Map category name
+               }).ToListAsync();
+            return Ok(courseList);
+        }
+
 
 
         [HttpPut("CreateCourse")]
@@ -115,6 +137,25 @@ namespace BE.Controllers.Courses
             var courseList = await _course.GetByIdAsync(id);
             return Ok(courseList);
         }
+
+        [HttpGet("GetMyAttemptCourse")]
+        public async Task<IActionResult> GetMyAttemptCourse(int userId)
+        {
+            var respone = _context.CourseAttempts.Where(x=>x.UserId == userId).Select(c=>new GetCourseDTO
+            {
+                Id = c.CourseId,
+                CourseName = c.Course.CourseName,
+                Publish = c.Course.Publish,
+                TotalJoined = c.Course.TotalJoined,
+                CreatedBy = c.Course.CreatedBy,
+                CreatedAt = c.Course.CreatedAt,
+                Image = c.Course.Image,
+                Price = c.Course.Price,
+                CategoryName = c.Course.CategoryNavigation.CategoryName // Map category name
+            });
+            return Ok(respone);
+        }
+
 
         [HttpGet("GetCourseByNameBrowse")]
         public async Task<IActionResult> GetCourseByIDBrowse(string name)
