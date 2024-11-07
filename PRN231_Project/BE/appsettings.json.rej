@@ -1,0 +1,10 @@
+diff a/PRN231_Project/BE/appsettings.json b/PRN231_Project/BE/appsettings.json	(rejected hunks)
+@@ -7,7 +7,7 @@
+   },
+   "AllowedHosts": "*",
+   "ConnectionStrings": {
+-    "Test": "server=DESKTOP-V4TQUU3; database=PRN231_Project;user=sa;password=12345;Integrated Security=true;TrustServerCertificate=Yes"
++    "Test": "server=DESKTOP-KP1A6KQ; database=PRN231_Project;user=sa;password=12345678;TrustServerCertificate=Yes"
+   },
+   "Jwt": {
+     "Key": "ThisIsASecretKeyForJwt1234567890",

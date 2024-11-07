@@ -23,11 +23,20 @@ builder.Services.AddAuthentication(options =>
 {
 	options.TokenValidationParameters = new TokenValidationParameters
 	{
+
 		ValidateIssuer = true,
 		ValidateAudience = true,
 		ValidateLifetime = true,
 		ValidIssuer = builder.Configuration["Jwt:Issuer"], // Đảm bảo đây là URL của Google
 		ValidAudience = builder.Configuration["Google:ClientId"], // Đây là Client ID của bạn
+
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+		ValidAudience = builder.Configuration["Jwt:Audience"],
+
 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
 	};
 })
