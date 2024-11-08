@@ -17,30 +17,41 @@ namespace BE.Controllers.Bill
 			_context = context;
 		}
 
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<BillDTO>>> GetBills()
+		[HttpGet("GetAllBill")]
+		public async Task<ActionResult> GetBills()
 		{
-			return await _context.Bills
-				.Select(b => new BillDTO
-				{
-					Id = b.Id,
-					UserId = b.UserId,
-					TotalPayment = b.TotalPayment
-				}).ToListAsync();
+			var respone  = await _context.Bills
+                .Select(b => new
+                {
+                    Id = b.Id,
+                    UserId = b.UserId,
+                    TotalPayment = b.TotalPayment,
+                    BillDetail = b.Courses.Select(x => new
+                    {
+                        CourseName = x.CourseName,
+						Price = x.Price
+                    }).ToList()
+                }).ToListAsync();
+            return Ok(respone);
 		}
 
-		[HttpPost]
-		public async Task<ActionResult<BillDTO>> CreateBill(BillDTO billDTO)
-		{
-			var bill = new Lib.Models.Bill
-			{
-				UserId = billDTO.UserId,
-				TotalPayment = billDTO.TotalPayment
-			};
 
-			_context.Bills.Add(bill);
-			await _context.SaveChangesAsync();
-			return CreatedAtAction(nameof(GetBills), new { id = bill.Id }, billDTO);
-		}
-	}
+        [HttpGet("GetUserBill")]
+        public async Task<ActionResult> GetBills(int userID)
+        {
+            var respone = await _context.Bills.Where(bill=>bill.UserId==userID)
+                .Select(b => new
+                {
+                    Id = b.Id,
+                    UserId = b.UserId,
+                    TotalPayment = b.TotalPayment,
+                    BillDetail = b.Courses.Select(x => new
+                    {
+                        CourseName = x.CourseName,
+                        Price = x.Price
+                    }).ToList()
+                }).ToListAsync();
+            return Ok(respone);
+        }
+    }
 }
