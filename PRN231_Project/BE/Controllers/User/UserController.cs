@@ -23,10 +23,13 @@ namespace BE.Controllers.User
             var users = await _context.Users
                 .Select(user => new UserDTO
                 {
+                    Id = user.Id,
                     Username = user.Username,
                     Email = user.Email,
                     DisplayName = user.DisplayName,
-                    Role = user.Role
+                    Role = user.Role,
+                    Status = user.Status,
+                    Created = user.Created
                 }).ToListAsync();
 
             // Trả về danh sách người dùng dưới dạng JSON
@@ -81,6 +84,25 @@ namespace BE.Controllers.User
 
 			return Ok("Profile updated successfully.");
 		}
+
+        [HttpPut("updateAdmin/{id}")]
+        public async Task<IActionResult> UpdateUserProfileAdmin(int id, EditProfileDTO editProfileDTO)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            user.Role = editProfileDTO.Role;
+            user.Status = editProfileDTO.Status;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok("Profile updated successfully.");
+        }
 
     }
 }

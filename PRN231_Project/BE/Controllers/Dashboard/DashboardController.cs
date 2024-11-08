@@ -19,23 +19,34 @@ namespace BE.Controllers
 		{
 			_context = context;
 		}
-		
 
-		[HttpGet("TotalRevenue")]
-		public async Task<ActionResult<decimal>> GetTotalRevenue()
-		{
-			// Tính tổng tiền đã thu được từ hóa đơn
-			var totalRevenue = await _context.Bills.SumAsync(b => b.TotalPayment);
-			return Ok(totalRevenue);
-		}
 
-		[HttpGet("TotalRegistrations")]
-		public async Task<IActionResult> GetTotalRegistrations()
-		{
-			var totalRegistrations = await _context.CourseAttempts
-				.CountAsync(); // Đếm số lượng bản ghi trong CourseAttempt
+        [HttpGet("Summary")]
+        public async Task<IActionResult> GetSummary()
+        {
+            // Calculate total users
+            var totalUsers = await _context.Users.CountAsync();
 
-			return Ok(new { TotalRegistrations = totalRegistrations });
-		}
-	}
+            // Calculate total quizzes
+            var totalQuizzes = await _context.Courses.CountAsync();
+
+            // Calculate total purchased quizzes (course attempts)
+            var purchasedQuizzes = await _context.CourseAttempts.CountAsync();
+
+            // Calculate total revenue
+            var totalRevenue = await _context.Bills.SumAsync(b => b.TotalPayment);
+
+            // Return the results as a combined summary object
+            var summary = new
+            {
+                totalUsers = totalUsers,
+                totalQuizzes = totalQuizzes,
+                purchasedQuizzes = purchasedQuizzes,
+                totalRevenue = totalRevenue
+            };
+
+            return Ok(summary);
+        }
+
+    }
 }
