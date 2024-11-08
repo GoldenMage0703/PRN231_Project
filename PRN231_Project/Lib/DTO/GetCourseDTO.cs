@@ -16,6 +16,7 @@ namespace Lib.DTO
         public int CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public byte[]? Image { get; set; }
+        public decimal? Price { get; set; }
         public string CategoryName { get; set; }
     }
 }

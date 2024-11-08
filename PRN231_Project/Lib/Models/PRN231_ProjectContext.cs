@@ -17,7 +17,6 @@ namespace Lib.Models
         }
 
         public virtual DbSet<Bill> Bills { get; set; } = null!;
-        public virtual DbSet<BillDetail> BillDetails { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Course> Courses { get; set; } = null!;
         public virtual DbSet<CourseAttempt> CourseAttempts { get; set; } = null!;
@@ -25,17 +24,12 @@ namespace Lib.Models
         public virtual DbSet<Question> Questions { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
-		public Task FindByEmailAsync(string email)
-		{
-			throw new NotImplementedException();
-		}
-
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server=TUANNM\\SQLEXPRESS; database=PRN231_Project;user=sa;password=1234578;Integrated Security=true;TrustServerCertificate=Yes");
+                optionsBuilder.UseSqlServer("server=TUANNM\\SQLEXPRESS; database=PRN231_Project;user=sa;password=12345;Integrated Security=true;TrustServerCertificate=Yes");
             }
         }
 
@@ -58,29 +52,23 @@ namespace Lib.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_bills_users");
-            });
 
-            modelBuilder.Entity<BillDetail>(entity =>
-            {
-                entity.HasNoKey();
+                entity.HasMany(d => d.Courses)
+                    .WithMany(p => p.Bills)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "BillDetail",
+                        l => l.HasOne<Course>().WithMany().HasForeignKey("CourseId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_bill_details_courses"),
+                        r => r.HasOne<Bill>().WithMany().HasForeignKey("BillId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_bill_details_bills"),
+                        j =>
+                        {
+                            j.HasKey("BillId", "CourseId");
 
-                entity.ToTable("bill_details");
+                            j.ToTable("bill_details");
 
-                entity.Property(e => e.BillId).HasColumnName("bill_id");
+                            j.IndexerProperty<int>("BillId").HasColumnName("bill_id");
 
-                entity.Property(e => e.CourseId).HasColumnName("course_id");
-
-                entity.HasOne(d => d.Bill)
-                    .WithMany()
-                    .HasForeignKey(d => d.BillId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_bill_details_bills");
-
-                entity.HasOne(d => d.Course)
-                    .WithMany()
-                    .HasForeignKey(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_bill_details_courses");
+                            j.IndexerProperty<int>("CourseId").HasColumnName("course_id");
+                        });
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -124,7 +112,6 @@ namespace Lib.Models
 
                 entity.Property(e => e.Price)
                     .HasColumnType("money")
-                    .HasColumnName("price")
                     .HasDefaultValueSql("((10000))");
 
                 entity.Property(e => e.Publish).HasColumnName("publish");
@@ -237,6 +224,8 @@ namespace Lib.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.Role).HasColumnName("role");
+
+                entity.Property(e => e.Status).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.Username)
                     .HasMaxLength(255)

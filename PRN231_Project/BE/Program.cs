@@ -21,25 +21,18 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidateLifetime = true,
-		ValidIssuer = builder.Configuration["Jwt:Issuer"], // Đảm bảo đây là URL của Google
-		ValidAudience = builder.Configuration["Google:ClientId"], // Đây là Client ID của bạn
-
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-		ValidAudience = builder.Configuration["Jwt:Audience"],
-
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-	};
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],  // Your API URL or Auth Server URL
+        ValidAudience = builder.Configuration["Jwt:Audience"], // Expected audience claim
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
 })
+
 .AddGoogle(options =>
 {
 	options.ClientId = builder.Configuration["Google:ClientId"];

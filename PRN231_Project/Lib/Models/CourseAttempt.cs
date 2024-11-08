@@ -9,7 +9,7 @@ namespace Lib.Models
         public int UserId { get; set; }
         public int CourseId { get; set; }
         public DateTime AttemptDate { get; set; }
-
+        public int Status { get; set; }
         public virtual Course Course { get; set; } = null!;
         public virtual User User { get; set; } = null!;
     }

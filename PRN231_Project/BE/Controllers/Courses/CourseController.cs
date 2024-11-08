@@ -48,6 +48,7 @@ namespace BE.Controllers.Courses
                 CreatedBy = c.CreatedBy,
                 CreatedAt = c.CreatedAt,
                 Image = c.Image,
+                Price = c.Price,
                 CategoryName = c.CategoryNavigation.CategoryName // Map category name
             }).ToListAsync();
 
