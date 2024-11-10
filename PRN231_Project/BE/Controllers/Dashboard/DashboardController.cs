@@ -6,6 +6,7 @@ using Lib.DTO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MimeKit.Tnef;
 
 namespace BE.Controllers
 {
@@ -46,6 +47,34 @@ namespace BE.Controllers
             };
 
             return Ok(summary);
+        }
+
+        [HttpGet("CourseSumary")]
+        public async Task<IActionResult> GetCourseSumary(int courseID)
+        {
+           int totalAttempts = await _context.CourseAttempts.Where(x=>x.CourseId==courseID).CountAsync();
+           decimal? totalRevenue = _context.Courses.FirstOrDefault(x=>x.Id == courseID).Price * totalAttempts;
+            int totalQuestion = _context.Questions.Where(x=>x.Course==courseID).Count();
+            var attemptsPerMonth = _context.CourseAttempts.Where(x=>x.CourseId==courseID)
+     .GroupBy(x => new { Year = x.AttemptDate.Year, Month = x.AttemptDate.Month })
+     .Select(g => new
+     {
+         Year = g.Key.Year,
+         Month = g.Key.Month,
+         NumberOfAttempts = g.Count()
+     })
+     .OrderBy(x => x.Year)
+     .ThenBy(x => x.Month)
+     .ToList();
+            var respone = new
+            {
+                totalAttempts,
+                totalRevenue,
+                totalQuestion,
+                attemptsPerMonth
+
+            };
+            return Ok(respone);
         }
 
     }
