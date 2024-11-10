@@ -161,7 +161,8 @@ namespace BE.Controllers.Courses
                     CreatedAt = c.Course.CreatedAt,
                     Image = c.Course.Image,
                     Price = c.Course.Price,
-                    CategoryName = c.Course.CategoryNavigation.CategoryName // Map category name
+                    CategoryName = c.Course.CategoryNavigation.CategoryName, // Map category name
+                    Status = c.Status,
                 })
                 .ToListAsync(); // Fetch all data first
 

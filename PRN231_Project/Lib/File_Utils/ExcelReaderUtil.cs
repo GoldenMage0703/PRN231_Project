@@ -25,6 +25,7 @@ namespace Lib.File_Utils
             // Load the Excel file from the byte array
             using (var memoryStream = new MemoryStream(fileBytes))
             {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using (var package = new ExcelPackage(memoryStream))
                 {
                     // Get the first worksheet

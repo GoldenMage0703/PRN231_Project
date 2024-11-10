@@ -96,6 +96,7 @@ public class CartController : ControllerBase
                         CourseId = item.Id,
                         UserId = userId,
                         AttemptDate = DateTime.UtcNow,
+                        Status = 1,
                     });
 
                 }

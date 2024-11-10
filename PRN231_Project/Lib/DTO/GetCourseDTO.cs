@@ -18,5 +18,6 @@ namespace Lib.DTO
         public byte[]? Image { get; set; }
         public decimal? Price { get; set; }
         public string CategoryName { get; set; }
+        public int Status { get; set; }
     }
 }

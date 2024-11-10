@@ -42,6 +42,7 @@ namespace BE.Controllers.Login
                 new Claim("id", user.Id.ToString()), // User ID
                 new Claim("displayName", user.DisplayName.Trim()), // Trimmed display name
                 new Claim("mail", user.Email.Trim()), // Trimmed email
+                new Claim("status", user.Status.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.ToString()) // Role as a string
             };
 
@@ -79,6 +80,7 @@ namespace BE.Controllers.Login
             var userIdClaim = User.FindFirst("id"); // Custom claim for user ID
             var displayNameClaim = User.FindFirst("displayName"); // Custom claim for display name
             var emailClaim = User.FindFirst("mail"); // Email claim
+            var status = User.FindFirst("status"); // Status
             var roleClaim = User.FindFirst(ClaimTypes.Role); // Role claim
 
             if (usernameClaim == null)
@@ -100,6 +102,7 @@ namespace BE.Controllers.Login
                 Username = user.Username,
                 DisplayName = displayNameClaim?.Value, // Get display name from claims
                 Email = emailClaim?.Value, // Get email from claims
+                status = status.Value,
                 Role = roleClaim?.Value // Get role from claims
             };
 
