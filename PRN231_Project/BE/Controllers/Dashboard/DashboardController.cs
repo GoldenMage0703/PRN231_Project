@@ -37,13 +37,26 @@ namespace BE.Controllers
             // Calculate total revenue
             var totalRevenue = await _context.Bills.SumAsync(b => b.TotalPayment);
 
+            var userPerMonth = _context.Users.Where(x => x.Role == 1 || x.Role == 2)
+                .GroupBy(x => new { Year = x.Created.Year, Month = x.Created.Month })
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    NumberOfRegister = g.Count()
+                })
+                .OrderBy(x => x.Year)
+                .ThenBy(x => x.Month)
+                .ToList();
+
             // Return the results as a combined summary object
             var summary = new
             {
                 totalUsers = totalUsers,
                 totalQuizzes = totalQuizzes,
                 purchasedQuizzes = purchasedQuizzes,
-                totalRevenue = totalRevenue
+                totalRevenue = totalRevenue,
+                userPerMonth = userPerMonth,
             };
 
             return Ok(summary);

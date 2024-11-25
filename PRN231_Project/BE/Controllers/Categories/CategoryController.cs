@@ -7,41 +7,50 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BE.Controllers.Categories;
 
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoryController : ControllerBase
+[Route("api/[controller]")]
+[ApiController]
+public class CategoryController : ControllerBase
+{
+    private readonly IRepository<Category> _category;
+    public CategoryController(IRepository<Category> category)
     {
-        private readonly IRepository<Category> _category;
-        public CategoryController(IRepository<Category> category)
-        {
-            _category = category;
-        }
-        [HttpGet("GetAllCategory")]
-        public async Task<IActionResult> Get()
-        {
-            var list = await _category.GetAllAsync();
-            return Ok(list);
-        }
-        [HttpGet("GetByID")]
-        public async Task<IActionResult> GetByID(int id)
-        {
-            return Ok(await _category.GetByIdAsync(id));
-        }
-        [HttpPost("CreateCategory")]
-        public async Task<IActionResult> Put(CreateCategoryDTO category)
-        {
-            await _category.AddAsync(new Category
-            {
-                CategoryName = category.CategoryName,
-                Description = category.Description,
-            });
-            return Ok();
-        }
-        [HttpDelete("RemoveCategory")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _category.DeleteAsync(id);
-            return Ok();
-        }
+        _category = category;
     }
+    [HttpGet("GetAllCategory")]
+    public async Task<IActionResult> Get()
+    {
+        var list = await _category.GetAllAsync();
+        return Ok(list);
+    }
+    [HttpGet("GetByID")]
+    public async Task<IActionResult> GetByID(int id)
+    {
+        return Ok(await _category.GetByIdAsync(id));
+    }
+    [HttpPost("CreateCategory")]
+    public async Task<IActionResult> Put(CreateCategoryDTO category)
+    {
+        await _category.AddAsync(new Category
+        {
+            CategoryName = category.CategoryName,
+            Description = category.Description,
+        });
+        return Ok();
+    }
+    [HttpDelete("RemoveCategory")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _category.DeleteAsync(id);
+        return Ok();
+    }
+    [HttpPost("EditCategory")]
+    public async Task<IActionResult> edit(int id, [FromBody] CreateCategoryDTO category)
+    {
+        var categoryToUpdate = await _category.GetByIdAsync(id);
+        categoryToUpdate.Description = category.Description;
+        categoryToUpdate.CategoryName = category.CategoryName;
+        await _category.UpdateAsync(categoryToUpdate);
+        return Ok(categoryToUpdate);
+    }
+}
 

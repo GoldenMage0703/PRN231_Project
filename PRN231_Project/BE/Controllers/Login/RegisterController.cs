@@ -26,8 +26,9 @@ namespace BE.Controllers.Login
 				DisplayName = userRegister.DisplayName,
 				Email = userRegister.Email,
 				Status = 1,
-                Role = 2
-			};
+                Role = userRegister.Role,
+				Created = DateTime.Now,
+            };
 
 			// Lưu người dùng vào cơ sở dữ liệu
 			_context.Users.Add(user);

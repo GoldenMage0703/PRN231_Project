@@ -103,17 +103,28 @@ namespace BE.Controllers.Questions
                 Course = courseID,
                 QuestionText = question.QuestionText,
             };
-           await _question.AddAsync(questionToAdd);
-            
+            await _question.AddAsync(questionToAdd);
+            var IdToAdd = await _question.GetLastAsync(x => x.Id);
             var listOption = (ICollection<Option>)question.Options.Select(x => new Option
             {
-                QuestionId = questionToAdd.Id,
+                QuestionId = IdToAdd.Id,
                 IsCorrect = x.isCorrect,
                 OptionText = x.OptionText,
             }).ToList();
             await _option.AddRangeAsync(listOption);
             return Ok();
         }
+
+        [HttpDelete("DeleteQuestion")]
+        public async Task<IActionResult> DeleteQuestion(int questionId)
+        {
+            var ques = (Question)await _question.GetByIdIncludeAsync(x => x.Options, x => x.Id == questionId);
+
+            await _option.DeleteRangeAsync(ques.Options);
+            await _question.DeleteAsync(questionId);
+            return Ok(ques);
+        }
+
         [HttpPost("DownloadInportQuestionTemplate")]
         public async Task<IActionResult> Download()
         {

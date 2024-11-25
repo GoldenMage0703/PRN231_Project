@@ -65,7 +65,7 @@ namespace BE.Controllers.Courses
             // If no courses are found, return NotFound
             if (courseList == null || !courseList.Any())
             {
-                return NotFound();
+                return NotFound("No quiz available right now!");
             }
 
             return Ok(courseList);
@@ -105,10 +105,11 @@ namespace BE.Controllers.Courses
                     CourseName = createCourseDTO.CourseName,
                     Publish = createCourseDTO.Publish,
                     TotalJoined = 0,
-                    CreatedBy = 1,
+                    CreatedBy = createCourseDTO.CreatedBy,
                     CreatedAt = DateTime.Now,
                     Image = createCourseDTO.Image,
                     Category = createCourseDTO.Category,
+                    Price = createCourseDTO.Price,
                 });
 
                 var createCourse = await _course.GetLastAsync(x => x.Id);
